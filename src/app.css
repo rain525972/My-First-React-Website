@@ -1,0 +1,84 @@
+
+
+/* ========== TOP ========== */
+.navigation{
+    margin-top: 4%;
+    margin-right: 16%;
+}
+
+.navigation a{
+    position: relative;
+    font-size: 1.5em;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 40px;
+    float: right;
+}
+
+.navigation a::after{
+    content: "";
+    position: absolute;
+    width: 100%;
+    left: 0px;
+    bottom: -6px;
+    height: 3px;
+    background: #fff;
+    border-radius: 5px;
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: 0.5s;
+}
+
+.navigation a:hover::after{
+    transform: scaleX(1);
+}
+
+.navigation .btnLogin-popup{
+    float: right;
+    width: 110px;
+    height: 50px;
+  
+    background: transparent;
+    border: 2px solid #fff;
+    outline: none;
+    border-radius:6px;
+    cursor: pointer;
+    font-size: 1.1em;
+    color: #fff;
+    font-weight: 500;
+    margin-left: 40px;
+    transition:0.5s;
+}
+
+.navigation .btnLogin-popup:hover{
+    background: #2c2c6c;
+    border-color: #2c2c6c;
+}
+
+section h5{
+    color: rgba(255,255,255,0.6);
+}
+
+section h2{
+    color:#4db5ff;
+    margin-bottom: 3rem;
+}
+
+/* MEDIA QUERIES (SMALL DEVICES) */
+@media screen and (max-width:600px){
+    .navigation {
+        margin-top: 7rem;
+        margin-right: 0;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column-reverse;
+    }
+
+    .navigation a {
+        display: flex;
+        width: max-content;
+        margin-bottom: 2rem;
+    }
+
+}

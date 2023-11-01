@@ -1,0 +1,44 @@
+section#calendar{
+    height: 112vh;
+    padding: 3rem 0 4rem 15rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.calendar__container{
+    margin-top: 3rem;
+    display:flex;
+    height: 100%;
+    width: 80%;
+    gap:5%;
+    overflow: hidden;
+    border-radius: 1rem;
+}
+.modal{
+    color: black;
+    font-weight: 500;
+}
+.custom-badge-success{
+    color: #2c2c6c;
+}
+.test{
+    font-size: xx-large;
+}
+/*============ MEDIA QUERIES (MEDIUM DEVICES) ============*/
+@media screen and (max-width:1024px){
+    section#calendar{
+        height: 128vh;
+        padding-left:10rem;
+    }
+}
+
+/*============ MEDIA QUERIES (SMALL DEVICES) ============*/
+/* MEDIA QUERIES (SMALL DEVICES) */
+@media screen and (max-width:600px){
+    section#calendar{
+        height: 98vh;
+        padding:0 1rem;
+    }
+    .calendar__container{
+        width: 100%;
+    }
+}

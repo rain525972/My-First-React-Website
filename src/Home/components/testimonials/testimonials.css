@@ -1,0 +1,67 @@
+section#testimonials{
+    height: 100vh;
+    padding: 2rem 3rem;
+    text-align: center;
+}
+.testimonials__container{
+    width: 45%;
+}
+
+.client__avatar{
+    width: 6rem;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    border: 0.4rem solid rgba(77,181,255,0.4);
+}
+
+.testimonial{
+    background: #2c2c6c;
+    text-align: center;
+    padding: 3rem;
+    border-radius: 2rem;
+    user-select: none;
+}
+
+.client__review{
+    color: rgba(255,255,255,0.9);
+    font-weight: 300;
+    display: block;
+    width: 80%;
+    margin: 0.8rem auto 0;
+}
+.swiper-pagination-bullet.swiper-pagination-bullet-active {
+    background: white;
+}
+.swiper-pagination .swiper-pagination-bullet{
+    background:  white;
+}
+
+.swiper-button-next, .swiper-rtl .swiper-button-prev {
+    right: var(--swiper-navigation-sides-offset, 10px);
+    left: auto;
+}
+.swiper-button-next, .swiper-rtl .swiper-button-prev {
+    right: var(--swiper-navigation-sides-offset, 10px);
+    left: auto;
+}
+
+.swiper .swiper-button-prev ,.swiper .swiper-button-next{
+    color: #fff;
+}
+
+
+/*============ MEDIA QUERIES (MEDIUM DEVICES) ============*/
+@media screen and (max-width:1024px){
+    .testimonials__container{
+        width: 70%;
+    }
+}
+
+/*============ MEDIA QUERIES (SMALL DEVICES) ============*/
+@media screen and (max-width:600px){
+    .container.testimonials__container{
+        width: 100%;
+    }
+}

@@ -1,0 +1,118 @@
+section#about{
+    height: 100vh;
+    padding: 2rem 3rem;
+    text-align: center;
+}
+.about__container{
+    display:flex;
+    height: 100%;
+    vertical-align: middle;
+    gap:5%;
+    padding-left: 10rem;
+}
+
+.about__me{
+    /* margin-left: 10%; */
+    width: 30%;
+    height: max-content;
+    border-radius: 2rem;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        #4db5ff,
+        transparent
+    );
+}
+.about__me-image{
+    aspect-ratio: 1/1;
+    border-radius: 2rem;
+    overflow: hidden;
+    transform: rotate(10deg);
+    transition: all 400ms ease;
+}
+
+.about__me-image:hover{
+    transform: rotate(0);
+}
+
+.about__content{
+    width: 70%;
+    padding:0 6.5rem;
+}
+
+.about__cards{
+    display: flex;
+    gap:3rem;
+}
+.about__card{
+    background: #2c2c6c;
+    border-radius: 1rem;
+    padding: 3rem;
+    transition: all 400ms ease;
+}
+.about__card:hover{
+    background: transparent;
+    border:1px solid rgba(77,181,255,0.4);
+    cursor:default;
+}
+.about__icon{
+    color: #4db5ff;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+.about__card h5{
+    font-size: 1rem;
+}
+.about__content p{
+    /* padding: 2rem 5rem; */
+    text-align: left;
+    margin: 2rem 1rem ;
+    color: rgba(255,255,255,0.6);
+}
+/*============ MEDIA QUERIES (MEDIUM DEVICES) ============*/
+@media screen and (max-width:1024px){
+    .about__container{
+        padding-left: 0;
+        gap:0;
+    }
+    .about__cards{
+        gap:1.5rem;
+    }
+    .about__content{
+        padding-left:4.5rem;
+    }
+    .about__content p{
+        margin:2rem 0 ;
+    }
+    .about__p{
+        display: block;
+        width: 100%;
+        margin-left: 3rem;
+    }
+}
+
+/*============ MEDIA QUERIES (SMALL DEVICES) ============*/
+/* MEDIA QUERIES (SMALL DEVICES) */
+@media screen and (max-width:600px){
+    section#about{
+        height: 150vh;
+    }
+    .about__container{
+        display:block;  
+    }
+    .about__me{
+        width: 60%;
+        margin: 0 auto 2rem;
+    }
+    .about__content{
+        width: 100%;
+        padding:0;
+        margin: 0 auto 2rem;
+    }
+    .about__card{ 
+        padding: 1.5rem;
+    }
+    .about__p{
+        margin-left: 0;
+    }
+}

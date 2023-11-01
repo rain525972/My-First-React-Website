@@ -1,0 +1,60 @@
+header{
+    height: 90vh;
+    padding: 7rem;
+    /* overflow: hidden; */
+}
+.header__container{
+    text-align: center;
+    height: 100%;
+    position: relative;
+}
+
+.header__container span{
+    position: absolute;
+    bottom: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255, 255, 255, 0.6);
+}
+/* ========== CTA ========== */
+.cta{
+    display: inline-block;
+    width: max-content;
+    color: #fff;
+    position: absolute; 
+    bottom: 12%;
+    left: 50%;
+    margin-bottom: 2rem;
+    transform: translateX(-50%);
+}
+.btn:hover{
+    background: transparent;
+    color: #fff;
+    border-color: #fff;
+}
+.cta h5{
+    display: inline-block;
+    margin-left: 0.8rem;
+}
+
+/*============ MEDIA QUERIES (SMALL DEVICES) ============*/
+/* MEDIA QUERIES (SMALL DEVICES) */
+@media screen and (max-width:600px){
+    header{
+        height: 20vh;
+        padding: 0;
+    }
+    .header__container span{
+        position: absolute;
+        top: -110%;
+        left: 65%;
+        
+    }
+    .cta{
+        position: absolute; 
+        top: -75%;
+        left: 65%;
+        margin-bottom: 2rem;
+        transform: translateX(-50%);
+    }
+}
