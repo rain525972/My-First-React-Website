@@ -23,6 +23,7 @@ export default function Itinerary() {
     })
     .then(response => {
       const updatedDataList = response.data.body.accounts.map(account => ({
+        id:account.account_id,
         year: account.year,
         month: account.month,
         date: account.date,
@@ -67,7 +68,7 @@ export default function Itinerary() {
     const existingDateIndex = dataList.findIndex((item) => item.date === selectedDate.date);
 
     const payload = {
-      account: "h5",
+      account: "h7",
       name: "小黑",
       password: "123456",
       year: selectedDate[0].year,
@@ -131,15 +132,30 @@ export default function Itinerary() {
   setModalVisible(true);
 };
 
-  const handleDelete = (index) => {
-    const updatedList = selectedDate.data.filter((item, i) => i !== index);
-    const updatedDataList = dataList.map((item) =>
-        item.date === selectedDate.date ? { ...item, data: updatedList } : item
-    );
-    setDataList(updatedDataList);
-    const updatedSelectedDate = { ...selectedDate, data: updatedList };
-    setSelectedDate(updatedSelectedDate);
+const handleDelete = (itemIndex) => {
+  const itemIdToDelete = selectedDate[itemIndex].id;
+  
+  axios.delete(`http://localhost:8080/mom/web/v1.0/account/${itemIdToDelete}`, {
+      headers: {
+          'Authorization': storedAuthToken,
+          'Content-Type': 'application/json'
+      }
+  })
+  .then(response => {
+      const updatedList = selectedDate[0].data.filter((item, i) => i !== itemIndex);
+      const updatedDataList = dataList.map((item) =>
+          item.date === selectedDate[0].date ? { ...item, data: updatedList } : item
+      );
+      setDataList(updatedDataList);
+      const updatedSelectedDate = { ...selectedDate[0], data: updatedList };
+      setSelectedDate([updatedSelectedDate]);
+  })
+  .catch(error => {
+      // 處理錯誤
+      console.error(error);
+  });
 };
+
 
   const headerRender = ({ value, type, onChange, onTypeChange }) => {
     const year = value.year();
