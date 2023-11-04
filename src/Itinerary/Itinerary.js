@@ -1,74 +1,118 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import './itinerary.css';
 import { Badge, Calendar, Modal, Form, Input, Button, Switch,Select } from 'antd';
 import {GrSubtractCircle} from 'react-icons/gr'
+import axios from 'axios';
 
-const initialDataList = [
-  {
-    date: 8,
-    data: [
-      {
-        type: 'success',
-        content: 'This is usual event.',
-      },
-    ],
-  },
-  {
-    date: 10,
-    data: [
-      {
-        type: 'success',
-        content: 'This is usual event.',
-      },
-      {
-        type: 'error',
-        content: 'This is error event.',
-      },
-    ],
-  },
-];
+const authToken = "eyJhbGciOiJSU0EtT0FFUC0yNTYiLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwidHlwZSI6IkpXRSIsInppcCI6IkRFRiJ9.jcsCeUTUsK9L-3OFBZotLBSIyGRu9zpzKzTS8L6RMgdI9DNPEHDZBCz8mOfKtcAxgRJ7r28yD3FIscN1eH3Cve_nrDVx_MzrGiTRPExa07pCGaxQXJW8sM0ZMBFvVyDosDFgBcU8EUT03oNYVrf7UxmUjxiMl0h8pu8HYpPb_vyuQm6ZmsPXrTKhJGv7A60k2cOiY2wJL34YhadhFvEXd84uX23NXNV0mrCgWHNE0aUfZ5qKJ_xHtJnI5NVOicdhFCqnIheahcmDCSUZMLzzvlOzkTez7cJt7xezhbeqnBKqNlyfunQhmVt7cH0GtTN4lT3Nd306MDgLXWPAtiqbuw.YbHQ5q33PqkD1U36S8DS2Q.zGgrXsMfpoSpy8-5lpTqNHJepzb5MVTUKTeCcRdoDRIhpMUg8tePICW68bOvl28caj9Vey5BP-VkL_TNI8YC2fk1gzIfFd-fGkGfuorSEYONMLy5rWZNoUinUJA5sjWNQ3b3Ii4f8GkO_0EtJkH01bc8OonWrBm1etoqceWuX4MnVaQ6Wj0u19rEcXPHR0If.qiYiUlPXBGCvfG8qEIlC0zyxxn4AUza2ZmEIKrJicac";
+    localStorage.setItem("authToken", authToken);
+    const storedAuthToken = localStorage.getItem("authToken");
 
 export default function Itinerary() {
-  const [dataList, setDataList] = useState(initialDataList);//全部數據
+  const [dataList, setDataList] = useState([]);//全部數據
   const [selectedDate, setSelectedDate] = useState(null);//選定單個日期的數據(或可以這樣寫const [selectedDate, setSelectedDate] = useState({ date: null, data: [] });)
   const [modalVisible, setModalVisible] = useState(false);//視窗是否顯示
   // const [forceRefresh, setForceRefresh] = useState(false);//是否強制重新渲染
   const [form] = Form.useForm();//這裡的[form]裡的form跟Form組件裡的form={form}的{}裡的form一樣 
 
+  useEffect(() => {
+    axios.get('http://localhost:8080/mom/web/v1.0/account?limit=20&page=1', {
+      headers: {
+        'Authorization': storedAuthToken
+      }
+    })
+    .then(response => {
+      const updatedDataList = response.data.body.accounts.map(account => ({
+        year: account.year,
+        month: account.month,
+        date: account.date,
+        data: [
+          {
+            type: account.type,
+            content: account.content,
+          },
+        ],
+      }));
+      console.log(updatedDataList);
+      setDataList(updatedDataList);
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  }, []);
+  
+
   const cellRender = (current) => {
-    console.log("1:",current.date());
-    const listData = dataList.find((item) => item.date === current.date());
-    if (!listData) return null;
-    console.log("2:",current.date());
+    const listData = dataList.filter((item) => item.year === current.year() && item.month === current.month() + 1 && item.date === current.date());
+    if (listData.length === 0) return null;
     return (
       <div>
-        {listData.data.map((item, index) => (
-          <Badge key={index} status={item.type} text={item.content} />
+        {listData.map((data, dataIndex) => (
+          <div key={dataIndex}>
+            {data.data.map((item, itemIndex) => (
+              <Badge key={itemIndex} status={item.type} text={item.content} />
+            ))}
+          </div>
         ))}
       </div>
     );
   };
+  
 
-  const handleFormSubmit = useCallback((values, form) => {
-    console.log(form)
+  const handleFormSubmit = (values, form) => {
+    console.log(form);
+  
     const type = values.priority ? 'error' : 'success';
     const content = values.content;
     const existingDateIndex = dataList.findIndex((item) => item.date === selectedDate.date);
-    if (existingDateIndex > -1) {
-        const updatedDataList = dataList.map((item) =>
-            item.date === selectedDate.date ? { ...item, data: [...item.data, { type, content }] } : item
-        );
-        setDataList(updatedDataList);
-        const updatedSelectedDate = { ...selectedDate, data: [...selectedDate.data, { type, content }] };
-        setSelectedDate(updatedSelectedDate);
-    } else {
-        const updatedList = [...dataList, { date: selectedDate.date, data: [{ type, content }] }];
-        setDataList(updatedList);
-        setSelectedDate({ date: selectedDate.date, data: [{ type, content }] });
-    }
+
+    const payload = {
+      account: "h5",
+      name: "小黑",
+      password: "123456",
+      year: selectedDate[0].year,
+      month: selectedDate[0].month,
+      date: selectedDate[0].date,
+      type: type,
+      content: content
+    };
+ 
+    axios.post('http://localhost:8080/mom/web/v1.0/account', payload, {
+      headers: {
+        'Authorization': storedAuthToken,
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => {
+        console.log(selectedDate);
+        if (existingDateIndex > -1) {
+          const updatedDataList = dataList.map((item) =>
+            item.date === selectedDate[0].date ? { ...item, data: [...item.data, { type, content }] } : item
+          );
+          console.log(updatedDataList);
+          setDataList(updatedDataList);
+          
+          const updatedSelectedDate = { ...selectedDate, data: [...selectedDate[0].data, { type, content }] };
+          setSelectedDate(updatedSelectedDate); // 更新 selectedDate
+        } else {
+          
+          const newDate = { year: selectedDate[0].year, month: selectedDate[0].month, date: selectedDate[0].date, data: [{ type, content }] };
+          console.log(newDate);
+          const updatedList = [...dataList, newDate];
+          setDataList(updatedList);
+          setSelectedDate(newDate); // 更新 selectedDate
+        }
+  
+        //處理成功回應
+      })
+      .catch(error => {
+        // 處理錯誤
+      });
+      setModalVisible(false);
     //setModalVisible(true);原本預設送出表單後本來就不會關閉
     form.resetFields();
-}, [dataList, selectedDate]);
+  };
+  
 
 
   const handleCloseModal = () => {
@@ -76,15 +120,16 @@ export default function Itinerary() {
     // setForceRefresh(true);
   };
 
+  //這onSelect函數是當某一日期格被選種後進行相關的處理，跟antd的Select組件無關
   const onSelect = (date, { source }) => {
-    let selected = dataList.find((item) => item.date === date.date());
-    if (!selected) {
-      selected = { date: date.date(), data: [] }; // 如果没有找到匹配的数据，创建一个空对象
-    }
+  const selected = dataList.filter((item) => item.year === date.year() && item.month === date.month() + 1 && item.date === date.date());
+  if (selected.length === 0) {
+    setSelectedDate([{ year: date.year(), month: date.month() + 1, date: date.date(), data: [] }]);
+  } else {
     setSelectedDate(selected);
-    setModalVisible(true);
-    
-  };
+  }
+  setModalVisible(true);
+};
 
   const handleDelete = (index) => {
     const updatedList = selectedDate.data.filter((item, i) => i !== index);
@@ -157,11 +202,17 @@ export default function Itinerary() {
         {selectedDate && (
         <Modal className='modal' open={modalVisible} onCancel={handleCloseModal} footer={null}>
             <Form style={{fontSize: 'medium',marginTop:'30px'}} form={form} initialValues={{ content: '' }} onFinish={(values) => handleFormSubmit(values, form)}>
-              {selectedDate.data.map((item, index) => (
-                <p key={index} style={{ color: item.type === 'success' ? '#2c2c6c' : null }}>
-                  {item.content} <GrSubtractCircle onClick={() => handleDelete(index)} />
-                </p>
-              ))}
+            {Array.isArray(selectedDate) ? (
+      selectedDate.map((date, index) => (
+        <div key={index}>
+          {date.data.map((item, itemIndex) => (
+            <p key={itemIndex} style={{ color: item.type === 'error' ? '#2c2c6c' : null }}>
+              {item.content} <GrSubtractCircle onClick={() => handleDelete(itemIndex)} />
+            </p>
+          ))}
+        </div>
+      ))
+    ) : null}
               <Form.Item label="New Item" name="content" style={{marginTop:'20px'}}>
                 <Input style={{width:'90%'}}/>
               </Form.Item>
