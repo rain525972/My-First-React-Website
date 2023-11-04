@@ -1,12 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import './itinerary.css';
 import { Badge, Calendar, Modal, Form, Input, Button, Switch,Select } from 'antd';
 import {GrSubtractCircle} from 'react-icons/gr'
-import axios from 'axios';
 
-const authToken = "eyJhbGciOiJSU0EtT0FFUC0yNTYiLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwidHlwZSI6IkpXRSIsInppcCI6IkRFRiJ9.jcsCeUTUsK9L-3OFBZotLBSIyGRu9zpzKzTS8L6RMgdI9DNPEHDZBCz8mOfKtcAxgRJ7r28yD3FIscN1eH3Cve_nrDVx_MzrGiTRPExa07pCGaxQXJW8sM0ZMBFvVyDosDFgBcU8EUT03oNYVrf7UxmUjxiMl0h8pu8HYpPb_vyuQm6ZmsPXrTKhJGv7A60k2cOiY2wJL34YhadhFvEXd84uX23NXNV0mrCgWHNE0aUfZ5qKJ_xHtJnI5NVOicdhFCqnIheahcmDCSUZMLzzvlOzkTez7cJt7xezhbeqnBKqNlyfunQhmVt7cH0GtTN4lT3Nd306MDgLXWPAtiqbuw.YbHQ5q33PqkD1U36S8DS2Q.zGgrXsMfpoSpy8-5lpTqNHJepzb5MVTUKTeCcRdoDRIhpMUg8tePICW68bOvl28caj9Vey5BP-VkL_TNI8YC2fk1gzIfFd-fGkGfuorSEYONMLy5rWZNoUinUJA5sjWNQ3b3Ii4f8GkO_0EtJkH01bc8OonWrBm1etoqceWuX4MnVaQ6Wj0u19rEcXPHR0If.qiYiUlPXBGCvfG8qEIlC0zyxxn4AUza2ZmEIKrJicac";
-    localStorage.setItem("authToken", authToken);
-    const storedAuthToken = localStorage.getItem("authToken");
+const initialDataList = [
+  {
+    date: 8,
+    data: [
+      {
+        type: 'success',
+        content: 'This is usual event.',
+      },
+    ],
+  },
+  {
+    date: 10,
+    data: [
+      {
+        type: 'success',
+        content: 'This is usual event.',
+      },
+      {
+        type: 'error',
+        content: 'This is error event.',
+      },
+    ],
+  },
+];
 
 export default function Itinerary() {
   const [dataList, setDataList] = useState([]);//全部數據
@@ -15,36 +35,11 @@ export default function Itinerary() {
   // const [forceRefresh, setForceRefresh] = useState(false);//是否強制重新渲染
   const [form] = Form.useForm();//這裡的[form]裡的form跟Form組件裡的form={form}的{}裡的form一樣 
 
-  useEffect(() => {
-    axios.get('http://localhost:8080/mom/web/v1.0/account?limit=20&page=1', {
-      headers: {
-        'Authorization': storedAuthToken
-      }
-    })
-    .then(response => {
-      const updatedDataList = response.data.body.accounts.map(account => ({
-        year: account.year,
-        month: account.month,
-        date: account.date,
-        data: [
-          {
-            type: account.type,
-            content: account.content,
-          },
-        ],
-      }));
-      console.log(updatedDataList);
-      setDataList(updatedDataList);
-    })
-    .catch(error => {
-      console.error(error);
-    });
-  }, []);
-  
-
   const cellRender = (current) => {
-    const listData = dataList.filter((item) => item.year === current.year() && item.month === current.month() + 1 && item.date === current.date());
-    if (listData.length === 0) return null;
+    console.log("1:",current.date());
+    const listData = dataList.find((item) => item.date === current.date());
+    if (!listData) return null;
+    console.log("2:",current.date());
     return (
       <div>
         {listData.map((data, dataIndex) => (
@@ -122,14 +117,14 @@ export default function Itinerary() {
 
   //這onSelect函數是當某一日期格被選種後進行相關的處理，跟antd的Select組件無關
   const onSelect = (date, { source }) => {
-  const selected = dataList.filter((item) => item.year === date.year() && item.month === date.month() + 1 && item.date === date.date());
-  if (selected.length === 0) {
-    setSelectedDate([{ year: date.year(), month: date.month() + 1, date: date.date(), data: [] }]);
-  } else {
+    let selected = dataList.find((item) => item.date === date.date());
+    if (!selected) {
+      selected = { date: date.date(), data: [] }; // 如果没有找到匹配的数据，创建一个空对象
+    }
     setSelectedDate(selected);
-  }
-  setModalVisible(true);
-};
+    setModalVisible(true);
+    
+  };
 
   const handleDelete = (index) => {
     const updatedList = selectedDate.data.filter((item, i) => i !== index);
